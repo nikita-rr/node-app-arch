@@ -1,0 +1,17 @@
+stages:
+  - deploy
+
+deploy_production:
+  stage: deploy
+  only:
+    - prod
+  tags:
+    - feedback
+    - prod
+  variables:
+    GIT_CLEAN_FLAGS: none
+  script:
+    - cp $ENV_PROD .env
+    - docker image prune -f
+    - docker compose -f docker-compose.prod.yml build --no-cache
+    - docker compose -f docker-compose.prod.yml -p bonusx up -d --remove-orphans
